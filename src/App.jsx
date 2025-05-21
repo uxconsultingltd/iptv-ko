@@ -1,0 +1,1 @@
+// App.jsx placeholder - replace with real implementation
