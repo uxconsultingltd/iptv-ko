@@ -9,10 +9,15 @@ export default function App() {
 
   useEffect(() => {
     fetch('http://localhost:3001/api/player_api?username=cbfa4abc2f&password=2da068dcfb39&action=get_live_streams')
-      .then(res => res.text())
-      .then(text => {
-        const data = JSON.parse(text);
-        setChannels(data);
+      .then(res => res.json())
+      .then(data => {
+        // Jeśli backend zwraca {user_info:..., server_info:..., channels: [...]}
+        const list = Array.isArray(data) ? data : (data.channels || []);
+        console.log('✅ Kanały załadowane:', list.length);
+        setChannels(list);
+      })
+      .catch(err => {
+        console.error('❌ Błąd ładowania kanałów:', err);
       });
   }, []);
 
@@ -31,17 +36,17 @@ export default function App() {
       hls.loadSource(url);
       hls.attachMedia(videoRef.current);
       hls.on(Hls.Events.MANIFEST_PARSED, () => {
-        videoRef.current.play().catch(err => console.error('Autoplay blocked:', err));
+        videoRef.current.play().catch(err => console.error('🎬 Autoplay blocked:', err));
       });
     } else if (videoRef.current.canPlayType('application/vnd.apple.mpegurl')) {
       videoRef.current.src = url;
-      videoRef.current.play().catch(err => console.error('Native play error:', err));
+      videoRef.current.play().catch(err => console.error('🎬 Native play error:', err));
     }
   };
 
   return (
     <div className="p-4">
-      <h1 className="text-xl font-bold mb-2">Kanały</h1>
+      <h1 className="text-xl font-bold mb-2">📺 Kanały</h1>
 
       <video
         ref={videoRef}
@@ -50,13 +55,15 @@ export default function App() {
         muted
         className="w-full max-h-[360px] bg-black mb-4"
         crossOrigin="anonymous"
-        onDoubleClick={() => videoRef.current.requestFullscreen()}
+        onDoubleClick={() => videoRef.current?.requestFullscreen()}
       />
 
-      <ul className="mb-4">
+      <ul className="mb-4 space-y-1">
         {channels.map((ch) => (
           <li key={ch.stream_id}>
-            <button onClick={() => playChannel(ch)}>{ch.name}</button>
+            <button className="text-left border px-2 py-1 rounded w-full hover:bg-blue-100" onClick={() => playChannel(ch)}>
+              {ch.name}
+            </button>
           </li>
         ))}
       </ul>
