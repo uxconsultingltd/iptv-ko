@@ -18,7 +18,9 @@ export default function App() {
     const fetchData = async () => {
       try {
         const res = await fetch(`${API_URL}?username=cbfa4abc2f&password=2da068dcfb39&action=get_live_streams`);
+        console.log('PLAYER_API response:', res);
         const data = await res.json();
+        console.log('Parsed JSON:', data);
         setChannels(data);
         setGroups(['All', ...new Set(data.map(ch => ch.category_name).filter(Boolean))]);
         setIsLoggedIn(true);
