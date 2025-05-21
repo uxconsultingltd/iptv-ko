@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from 'react';
 import Hls from 'hls.js';
 
@@ -12,6 +13,7 @@ export default function App() {
   const [epg, setEpg] = useState([]);
   const [selectedChannel, setSelectedChannel] = useState(null);
   const videoRef = useRef(null);
+  const hlsRef = useRef(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -44,12 +46,21 @@ export default function App() {
   const playChannel = (channel) => {
     setSelectedChannel(channel);
     const url = `http://b3.dinott.com/live/cbfa4abc2f/2da068dcfb39/${channel.stream_id}.m3u8`;
+
+    if (hlsRef.current) {
+      hlsRef.current.destroy();
+      hlsRef.current = null;
+    }
+
     if (Hls.isSupported()) {
       const hls = new Hls();
+      hlsRef.current = hls;
       hls.loadSource(url);
       hls.attachMedia(videoRef.current);
-    } else {
+    } else if (videoRef.current.canPlayType('application/vnd.apple.mpegurl')) {
       videoRef.current.src = url;
+    } else {
+      console.error('HLS is not supported in this browser');
     }
   };
 
@@ -63,7 +74,7 @@ export default function App() {
     return epg
       .filter(p => p.channel === channel.epg_channel_id)
       .map(p => {
-        const start = new Date(p.start.slice(0, 14).replace(/(\\d{4})(\\d{2})(\\d{2})(\\d{2})(\\d{2})/, '$1-$2-$3T$4:$5'));
+        const start = new Date(p.start.slice(0, 14).replace(/(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})/, '$1-$2-$3T$4:$5'));
         return { ...p, start };
       })
       .sort((a, b) => a.start - b.start);
@@ -112,6 +123,7 @@ export default function App() {
             autoPlay
             className="w-full max-h-[360px] cursor-pointer"
             onDoubleClick={toggleFullScreen}
+            crossOrigin="anonymous"
           />
         </div>
 
