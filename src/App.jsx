@@ -121,6 +121,7 @@ export default function App() {
             ref={videoRef}
             controls
             autoPlay
+            muted
             className="w-full max-h-[360px] cursor-pointer"
             onDoubleClick={toggleFullScreen}
             crossOrigin="anonymous"
