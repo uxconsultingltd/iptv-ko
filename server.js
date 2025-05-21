@@ -17,7 +17,6 @@ app.get('/api/player_api', async (req, res) => {
   }
 });
 
-// ✅ BEZ ŚCIEŻKI ZMYSŁOWEJ, używa req.originalUrl
 app.use('/api/stream-proxy', async (req, res) => {
   const path = req.originalUrl.replace('/api/stream-proxy/', '');
   const url = `http://b3.dinott.com/${path}`;
