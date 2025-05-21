@@ -11,7 +11,6 @@ export default function App() {
   const [selectedGroup, setSelectedGroup] = useState('All');
   const [epg, setEpg] = useState([]);
   const [selectedChannel, setSelectedChannel] = useState(null);
-  const [error, setError] = useState('');
   const videoRef = useRef(null);
 
   useEffect(() => {
@@ -19,22 +18,15 @@ export default function App() {
       try {
         const res = await fetch(`${API_URL}?username=cbfa4abc2f&password=2da068dcfb39&action=get_live_streams`);
         const text = await res.text();
-        console.log('Dane z player_api:', text);
-        
         const data = JSON.parse(text);
-        console.log('Zparsowane kanały:', data);
-
-        const epgText = await epgRes.text();
-        console.log('EPG text:', epgText);
-        
         setChannels(data);
-        setGroups(['All', ...new Set(data.map(ch => ch.category_name).filter(Boolean))]);
+        setGroups(['All', ...new Set(data.map(ch => ch.category_id).filter(Boolean))]);
         setIsLoggedIn(true);
 
         const epgRes = await fetch(`${EPG_URL}?username=cbfa4abc2f&password=2da068dcfb39`);
-        const xml = await epgRes.text();
+        const epgText = await epgRes.text();
         const parser = new DOMParser();
-        const doc = parser.parseFromString(xml, 'text/xml');
+        const doc = parser.parseFromString(epgText, 'text/xml');
         const programs = Array.from(doc.querySelectorAll('programme')).map(p => ({
           channel: p.getAttribute('channel'),
           title: p.querySelector('title')?.textContent,
@@ -43,7 +35,7 @@ export default function App() {
         }));
         setEpg(programs);
       } catch (err) {
-        setError('Failed to load channel data.');
+        console.error('Błąd:', err);
       }
     };
     fetchData();
@@ -78,7 +70,7 @@ export default function App() {
   };
 
   const filteredChannels = channels.filter(c =>
-    selectedGroup === 'All' || c.category_name === selectedGroup
+    selectedGroup === 'All' || c.category_id === selectedGroup
   );
 
   if (!isLoggedIn) return <div className="p-6 text-center">⏳ Loading IPTV data...</div>;
@@ -93,7 +85,7 @@ export default function App() {
           onChange={(e) => setSelectedGroup(e.target.value)}
         >
           {groups.map((g, i) => (
-            <option key={i} value={g}>{g}</option>
+            <option key={i} value={g}>Group {g}</option>
           ))}
         </select>
 
