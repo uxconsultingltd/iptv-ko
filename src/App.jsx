@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from 'react';
 import Hls from 'hls.js';
 
@@ -43,6 +42,17 @@ export default function App() {
   return (
     <div className="p-4">
       <h1 className="text-xl font-bold mb-2">Kanały</h1>
+
+      <video
+        ref={videoRef}
+        controls
+        autoPlay
+        muted
+        className="w-full max-h-[360px] bg-black mb-4"
+        crossOrigin="anonymous"
+        onDoubleClick={() => videoRef.current.requestFullscreen()}
+      />
+
       <ul className="mb-4">
         {channels.map((ch) => (
           <li key={ch.stream_id}>
@@ -50,16 +60,6 @@ export default function App() {
           </li>
         ))}
       </ul>
-
-      <video
-        ref={videoRef}
-        controls
-        autoPlay
-        muted
-        className="w-full max-h-[360px] bg-black"
-        crossOrigin="anonymous"
-        onDoubleClick={() => videoRef.current.requestFullscreen()}
-      />
     </div>
   );
 }
