@@ -43,28 +43,28 @@ export default function App() {
     fetchData();
   }, []);
 
-  const playChannel = (channel) => {
-    setSelectedChannel(channel);
-    const url = `/api/stream?id=${channel.stream_id}`;
+const playChannel = (channel) => {
+  setSelectedChannel(channel);
+  const url = `/api/stream?id=${channel.stream_id}`; // używamy proxy!
 
-    if (hlsRef.current) {
-      hlsRef.current.destroy();
-      hlsRef.current = null;
-    }
+  if (hlsRef.current) {
+    hlsRef.current.destroy();
+    hlsRef.current = null;
+  }
 
-    if (Hls.isSupported()) {
-      const hls = new Hls();
-      hlsRef.current = hls;
-      hls.loadSource(url);
-      hls.attachMedia(videoRef.current);
-      hls.on(Hls.Events.MANIFEST_PARSED, () => {
-        videoRef.current.play().catch((err) => console.error('Auto play blocked:', err));
-      });
-    } else if (videoRef.current.canPlayType('application/vnd.apple.mpegurl')) {
-      videoRef.current.src = url;
-      videoRef.current.play().catch((err) => console.error('Native play error:', err));
-    }
-  };
+  if (Hls.isSupported()) {
+    const hls = new Hls();
+    hlsRef.current = hls;
+    hls.loadSource(url);
+    hls.attachMedia(videoRef.current);
+    hls.on(Hls.Events.MANIFEST_PARSED, () => {
+      videoRef.current.play().catch((err) => console.error('Auto play blocked:', err));
+    });
+  } else if (videoRef.current.canPlayType('application/vnd.apple.mpegurl')) {
+    videoRef.current.src = url;
+    videoRef.current.play().catch((err) => console.error('Native play error:', err));
+  }
+};
 
   const toggleFullScreen = () => {
     if (videoRef.current.requestFullscreen) {
@@ -119,15 +119,15 @@ export default function App() {
       <div className="md:col-span-2">
         <h2 className="text-xl font-bold mb-2">▶️ Preview</h2>
         <div className="bg-black rounded p-2">
-        <video
-          ref={videoRef}
-          controls
-          autoPlay
-          muted
-          className="w-full max-h-[360px] cursor-pointer"
-          onDoubleClick={toggleFullScreen}
-          crossOrigin="anonymous"
-        />
+<video
+  ref={videoRef}
+  controls
+  autoPlay
+  muted
+  className="w-full max-h-[360px] cursor-pointer"
+  onDoubleClick={toggleFullScreen}
+  crossOrigin="anonymous"
+/>
         </div>
 
         {selectedChannel && (
