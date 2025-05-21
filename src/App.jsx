@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from 'react';
 import Hls from 'hls.js';
 
@@ -44,7 +43,7 @@ export default function App() {
 
   const playChannel = (channel) => {
     setSelectedChannel(channel);
-    const url = `http://b3.dinott.com/live/cbfa4abc2f/2da068dcfb39/\${channel.stream_id}.m3u8`;
+    const url = `http://b3.dinott.com/live/cbfa4abc2f/2da068dcfb39/${channel.stream_id}.m3u8`;
     if (Hls.isSupported()) {
       const hls = new Hls();
       hls.loadSource(url);
@@ -64,7 +63,7 @@ export default function App() {
     return epg
       .filter(p => p.channel === channel.epg_channel_id)
       .map(p => {
-        const start = new Date(p.start.slice(0, 14).replace(/(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})/, '$1-$2-$3T$4:$5'));
+        const start = new Date(p.start.slice(0, 14).replace(/(\\d{4})(\\d{2})(\\d{2})(\\d{2})(\\d{2})/, '$1-$2-$3T$4:$5'));
         return { ...p, start };
       })
       .sort((a, b) => a.start - b.start);
