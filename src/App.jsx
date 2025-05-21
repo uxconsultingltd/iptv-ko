@@ -119,15 +119,15 @@ export default function App() {
       <div className="md:col-span-2">
         <h2 className="text-xl font-bold mb-2">▶️ Preview</h2>
         <div className="bg-black rounded p-2">
-          <video
-            ref={videoRef}
-            controls
-            autoPlay
-            muted
-            className="w-full max-h-[360px] cursor-pointer"
-            onDoubleClick={toggleFullScreen}
-            crossOrigin="anonymous"
-          />
+        <video
+          ref={videoRef}
+          controls
+          autoPlay
+          muted
+          className="w-full max-h-[360px] cursor-pointer"
+          onDoubleClick={toggleFullScreen}
+          crossOrigin="anonymous"
+        />
         </div>
 
         {selectedChannel && (
