@@ -23,6 +23,9 @@ export default function App() {
         
         const data = JSON.parse(text);
         console.log('Zparsowane kanały:', data);
+
+        const epgText = await epgRes.text();
+        console.log('EPG text:', epgText);
         
         setChannels(data);
         setGroups(['All', ...new Set(data.map(ch => ch.category_name).filter(Boolean))]);
