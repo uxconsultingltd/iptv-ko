@@ -1,6 +1,6 @@
 export default async function handler(req, res) {
   const { username, password, action = 'player_api' } = req.query;
-  const url = `http://b3.dinott.com/${action}.php?username=${username}&password=${password}`;
+  const url = `http://b3.dinott.com/player_api.php?username=${username}&password=${password}&action=${action}`;
   try {
     const r = await fetch(url);
     const data = await r.text();
