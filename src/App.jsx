@@ -18,13 +18,13 @@ export default function App() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch(\`\${API_URL}?username=cbfa4abc2f&password=2da068dcfb39&action=get_live_streams\`);
+        const res = await fetch(`${API_URL}?username=cbfa4abc2f&password=2da068dcfb39&action=get_live_streams`);
         const data = await res.json();
         setChannels(data);
         setGroups(['All', ...new Set(data.map(ch => ch.category_name).filter(Boolean))]);
         setIsLoggedIn(true);
 
-        const epgRes = await fetch(\`\${EPG_URL}?username=cbfa4abc2f&password=2da068dcfb39\`);
+        const epgRes = await fetch(`${EPG_URL}?username=cbfa4abc2f&password=2da068dcfb39`);
         const xml = await epgRes.text();
         const parser = new DOMParser();
         const doc = parser.parseFromString(xml, 'text/xml');
@@ -44,7 +44,7 @@ export default function App() {
 
   const playChannel = (channel) => {
     setSelectedChannel(channel);
-    const url = \`http://b3.dinott.com/live/cbfa4abc2f/2da068dcfb39/\${channel.stream_id}.m3u8\`;
+    const url = `http://b3.dinott.com/live/cbfa4abc2f/2da068dcfb39/\${channel.stream_id}.m3u8`;
     if (Hls.isSupported()) {
       const hls = new Hls();
       hls.loadSource(url);
