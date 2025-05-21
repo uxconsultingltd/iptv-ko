@@ -45,7 +45,7 @@ export default function App() {
 
   const playChannel = (channel) => {
     setSelectedChannel(channel);
-    const url = `http://b3.dinott.com/live/cbfa4abc2f/2da068dcfb39/${channel.stream_id}.m3u8`;
+    const url = `/api/stream?id=${channel.stream_id}`;
 
     if (hlsRef.current) {
       hlsRef.current.destroy();
