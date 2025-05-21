@@ -1,4 +1,3 @@
-
 const express = require('express');
 const fetch = require('node-fetch');
 const app = express();
@@ -13,12 +12,14 @@ app.get('/api/player_api', async (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.json(json);
   } catch (error) {
+    console.error('API error:', error);
     res.status(500).json({ error: 'Failed to fetch IPTV API data' });
   }
 });
 
-app.get('/api/stream-proxy/*', async (req, res) => {
-  const path = req.params[0];
+// ✅ BEZ ŚCIEŻKI ZMYSŁOWEJ, używa req.originalUrl
+app.use('/api/stream-proxy', async (req, res) => {
+  const path = req.originalUrl.replace('/api/stream-proxy/', '');
   const url = `http://b3.dinott.com/${path}`;
   try {
     const response = await fetch(url, {
@@ -28,6 +29,7 @@ app.get('/api/stream-proxy/*', async (req, res) => {
     res.setHeader('Content-Type', response.headers.get('content-type') || 'application/octet-stream');
     response.body.pipe(res);
   } catch (err) {
+    console.error('Proxy error:', err);
     res.status(500).send('Stream proxy failed');
   }
 });
