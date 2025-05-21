@@ -57,10 +57,12 @@ export default function App() {
       hlsRef.current = hls;
       hls.loadSource(url);
       hls.attachMedia(videoRef.current);
+      hls.on(Hls.Events.MANIFEST_PARSED, () => {
+        videoRef.current.play().catch((err) => console.error('Auto play blocked:', err));
+      });
     } else if (videoRef.current.canPlayType('application/vnd.apple.mpegurl')) {
       videoRef.current.src = url;
-    } else {
-      console.error('HLS is not supported in this browser');
+      videoRef.current.play().catch((err) => console.error('Native play error:', err));
     }
   };
 
