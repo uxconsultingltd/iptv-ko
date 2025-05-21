@@ -8,7 +8,7 @@ export default function App() {
   const hlsRef = useRef(null);
 
   useEffect(() => {
-    fetch('/api/player_api?username=cbfa4abc2f&password=2da068dcfb39&action=get_live_streams')
+    fetch('http://localhost:3001/api/player_api?username=cbfa4abc2f&password=2da068dcfb39&action=get_live_streams')
       .then(res => res.text())
       .then(text => {
         const data = JSON.parse(text);
@@ -18,7 +18,7 @@ export default function App() {
 
   const playChannel = (channel) => {
     setSelectedChannel(channel);
-    const url = `/api/stream-proxy/live/cbfa4abc2f/2da068dcfb39/${channel.stream_id}.m3u8`;
+    const url = `http://localhost:3001/api/stream-proxy/live/cbfa4abc2f/2da068dcfb39/${channel.stream_id}.m3u8`;
 
     if (hlsRef.current) {
       hlsRef.current.destroy();
